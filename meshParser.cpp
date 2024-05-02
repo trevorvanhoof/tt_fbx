@@ -63,14 +63,14 @@ namespace {
             i = (int)polygonIndex;
         // Should probably never happen, but it is possible
         else if (lMappingMode == FbxGeometryElement::eNone)
-            return T();
+            return {};
         // Not implemented yet
         // else if (lMappingMode == FbxGeometryElement::eByEdge)
         // else if (lMappingMode == FbxGeometryElement::eAllSame)
         else {
             // other modes not supported
             __debugbreak();
-            return T();
+            return {};
         }
 
         // Next, the index can be an indirection as well, when the data is reusable we can have an index buffer
@@ -83,13 +83,13 @@ namespace {
         else {
             // other modes not supported
             __debugbreak();
-            return T();
+            return {};
         }
 
         // Finally, return the value at the right index.
         return element->GetDirectArray().GetAt(i);
     }
-    
+
     // Get data for a single vertex, by reading each attribute in the mesh and filling the Vertex structure.
     void getVertex(const FbxMesh* pMesh, size_t polygonIndex, size_t localVertexIndex, size_t globalVertexIndex, Vertex& vertexBuffer, const std::vector<std::vector<std::pair<int, double>>>& orderedSkinWeights) {
         // Reset the vertex buffer.
@@ -127,6 +127,8 @@ namespace {
                 vertexBuffer.setFloat((float)pairs[index].second);
             }
         }
+
+        // FbxMesh::GetElementNormalCount, FbxMesh::GetElementNormal, Vertex::setVec3
 
         // Finally, append each attribute in the mesh to the vertex buffer.
         for (size_t x = 0; x < std::min((int)Semantic::_Stride, pMesh->GetElementNormalCount()); ++x)
